@@ -371,34 +371,33 @@ public class Algo_Trois_Deux_SSS {
 
         boolean b = true;// signifie que il restes des contraintes il reste des vars
 
+        OUTER_LOOP :
         while (b) {
 
             //cas 1 : il y a une variable x qui apparaît dans 3 contraintes unaires
             for(int i = 0 ; i < this.unaires.length ; i++){
-                System.out.println(this.unaires.length);
                 if((this.unaires[i][0] == true)&&(this.unaires[i][1] == true)&&(this.unaires[i][2] == true)) {
                     b = false;
-                    break;
+                    continue OUTER_LOOP ;
                 }
             }
 
-            System.out.println("45");
             //cas 2 :
             for(int i = 0 ; i < this.unaires.length ; i++){
                 if((this.unaires[i][0] == true)&&(this.unaires[i][1] == true)) {
                     cas_2(i);
                     b = verfierContraiteRestantes();
-                    continue;
+                    continue OUTER_LOOP;
                 }
                 else if((this.unaires[i][0] == true)&&(this.unaires[i][2] == true)){
                     cas_2(i);
                     b = verfierContraiteRestantes();
-                    continue;
+                    continue OUTER_LOOP;
                 }
                 else if((this.unaires[i][1] == true)&&(this.unaires[i][2] == true)){
                     cas_2(i);
                     b = verfierContraiteRestantes();
-                    continue;
+                    continue OUTER_LOOP;
                 }
 
             }
@@ -408,17 +407,17 @@ public class Algo_Trois_Deux_SSS {
                 if(this.unaires[i][0] == true) {
                     cas_3(i, 0);
                     b = verfierContraiteRestantes();
-                    continue;
+                    continue OUTER_LOOP;
                 }
                 else if(this.unaires[i][1] == true){
                     cas_3(i , 1);
                     b = verfierContraiteRestantes();
-                    continue;
+                    continue OUTER_LOOP;
                 }
                 else if(this.unaires[i][2] == true){
                     cas_3(i , 2);
                     b = verfierContraiteRestantes();
-                    continue;
+                    continue OUTER_LOOP;
                 }
             }
 
@@ -431,7 +430,7 @@ public class Algo_Trois_Deux_SSS {
                             if (this.binaires[i][j][k][u]){
                                 cas_4(i , j , k , u);
                                 b = verfierContraiteRestantes();
-                                continue;
+                                continue OUTER_LOOP;
                             }
 
                         }
