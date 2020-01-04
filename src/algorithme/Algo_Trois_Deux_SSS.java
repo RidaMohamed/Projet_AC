@@ -23,6 +23,7 @@ public class Algo_Trois_Deux_SSS {
     private int nb_var;
     private ArrayList<Integer> deuxCouelurs;
     private ArrayList<int[]> listesDesContraintesAsupprimer ;
+    private int tabTaille = 0;
 
     public Algo_Trois_Deux_SSS() throws IOException {
         String defaultDirectory = "res";
@@ -72,13 +73,13 @@ public class Algo_Trois_Deux_SSS {
                         for (int k = 0 ; k < 3 ; k ++){
                             for (int u = 0 ; u <3 ; u++) {
                                 this.binaires[i][j][k][u] = true ;
-                                this.nb_clauses = this.nb_clauses + 9 ;
+                                this.nb_clauses++ ;
                             }
                         }
                         System.out.print(line.charAt(j));
                     }
                 }else
-                    System.out.print(" ");
+                    System.out.print(line.charAt(j));
 
             }
 
@@ -94,6 +95,7 @@ public class Algo_Trois_Deux_SSS {
      * @param n
      */
     public void initTablesContarinte(int n){
+        this.tabTaille = n;
         this.unaires = new boolean[n][3];
         this.binaires = new boolean[n][n][3][3];
 
@@ -127,7 +129,7 @@ public class Algo_Trois_Deux_SSS {
         this.nb_clauses = this.nb_clauses - 3 ;
 
         //supprission de var X de toutes les contrainbtes binares
-            for (int j = 0 ; j < this.binaires.length ; j++){
+            for (int j = 0 ; j < this.tabTaille ; j++){
                 if(j != varX) {
                     for (int k = 0; k < 3; k++) {
                         for (int u = 0; u < 3; u++) {
@@ -156,11 +158,10 @@ public class Algo_Trois_Deux_SSS {
      */
     public void cas_3(int varX , int c){
 
-
         this.unaires[varX][c] = false ;
         this.nb_clauses--;
 
-        for (int j = 0 ; j < this.binaires.length ; j ++){
+        for (int j = 0 ; j < this.tabTaille ; j ++){
             if ( j != varX){
                 for (int u = 0 ; u < 3 ; u++){
                     if (this.binaires[varX][j][c][u]){
@@ -182,7 +183,7 @@ public class Algo_Trois_Deux_SSS {
         listesDesContraintesAsupprimer =
                 new ArrayList<>();
 
-        for (int j = 0 ; j < this.binaires.length ; j ++){
+        for (int j = 0 ; j < this.tabTaille; j ++){
             if ( j != varX){
                 for (int u = 0 ; u < 3 ; u++){
                     if (this.binaires[varX][j][this.deuxCouelurs.get(0)][u]){
@@ -193,7 +194,7 @@ public class Algo_Trois_Deux_SSS {
                         e[3] = u;
                         listesDesContraintesAsupprimer.add(e);
                         ///////////////////////////////2eme couleur
-                        for (int i = 0 ; i< this.binaires.length ; i ++){
+                        for (int i = 0 ; i< this.tabTaille ; i ++){
                             if ( i != varX){
                                 for (int k = 0 ; k < 3 ; k++){
                                     if (this.binaires[varX][i][this.deuxCouelurs.get(1)][k]){
@@ -231,7 +232,7 @@ public class Algo_Trois_Deux_SSS {
                         e[3] = u;
                         listesDesContraintesAsupprimer.add(e);
                         ///////////////////////////////2eme couleur
-                        for (int i = 0 ; i< this.binaires.length ; i ++){
+                        for (int i = 0 ; i< this.tabTaille ; i ++){
                             if ( i != varX){
                                 for (int k = 0 ; k < 3 ; k++){
                                     if (this.binaires[varX][i][this.deuxCouelurs.get(1)][k]){
@@ -282,7 +283,7 @@ public class Algo_Trois_Deux_SSS {
                 this.unaires[varX][c1] = true;
                 //
                 this.unaires[varY][c1] = true;
-                this.nb_clauses=+ 2;
+                this.nb_clauses+= 2;
                 break;
             case 1 :
                 this.unaires[varX][c1] = true;
@@ -293,13 +294,13 @@ public class Algo_Trois_Deux_SSS {
                     this.unaires[varY][COULEUR_VERT] = true;
                 else
                     this.unaires[varY][COULEUR_ROUGE] = true;
-                this.nb_clauses=+ 2;
+                this.nb_clauses+= 2;
                     break;
             case 2 :
                 this.unaires[varX][c2] = true;
                 //
                 this.unaires[varY][c2] = true;
-                this.nb_clauses=+ 2;
+                this.nb_clauses+= 2;
                 break;
             case 3 :
                 if (c1 == COULEUR_ROUGE && c2 == COULEUR_VERT)
@@ -310,7 +311,7 @@ public class Algo_Trois_Deux_SSS {
                     this.unaires[varX][COULEUR_ROUGE] = true;
                 //
                 this.unaires[varY][c2] = true;
-                this.nb_clauses=+ 2;
+                this.nb_clauses+= 2;
                 break;
         }
 
@@ -348,7 +349,6 @@ public class Algo_Trois_Deux_SSS {
             deuxCouelurs.add(COULEUR_ROUGE);
             deuxCouelurs.add(COULEUR_VERT);
         }
-
     }
 
     /**
@@ -375,7 +375,7 @@ public class Algo_Trois_Deux_SSS {
         while (b) {
 
             //cas 1 : il y a une variable x qui apparaît dans 3 contraintes unaires
-            for(int i = 0 ; i < this.unaires.length ; i++){
+            for(int i = 0 ; i < this.tabTaille ; i++){
                 if((this.unaires[i][0] == true)&&(this.unaires[i][1] == true)&&(this.unaires[i][2] == true)) {
                     b = false;
                     continue OUTER_LOOP ;
@@ -383,7 +383,7 @@ public class Algo_Trois_Deux_SSS {
             }
 
             //cas 2 :
-            for(int i = 0 ; i < this.unaires.length ; i++){
+            for(int i = 0 ; i < this.tabTaille; i++){
                 if((this.unaires[i][0] == true)&&(this.unaires[i][1] == true)) {
                     cas_2(i);
                     b = verfierContraiteRestantes();
@@ -403,7 +403,7 @@ public class Algo_Trois_Deux_SSS {
             }
 
             //cas 3 :
-            for (int i = 0 ; i < this.unaires.length ; i++){
+            for (int i = 0 ; i < this.tabTaille; i++){
                 if(this.unaires[i][0] == true) {
                     cas_3(i, 0);
                     b = verfierContraiteRestantes();
@@ -423,7 +423,7 @@ public class Algo_Trois_Deux_SSS {
 
 
             //cas 4 :
-            for (int i = 0 ; i < this.binaires.length ; i++){
+            for (int i = 0 ; i < this.tabTaille ; i++){
                 for (int j = 0 ; j < this.binaires.length ; j++){
                     for (int k = 0 ; k < 3 ; k++){
                         for (int  u = 0 ; u < 3 ; u++){
