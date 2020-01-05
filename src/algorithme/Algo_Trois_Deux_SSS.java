@@ -19,6 +19,7 @@ public class Algo_Trois_Deux_SSS {
     private int nb_clauses = 0;
     private int nb_clauses_unaires;
     private int nb_clauses_binaires;
+    private int bb = 0;
 
     private int nb_var;
     private ArrayList<Integer> deuxCouelurs;
@@ -70,12 +71,13 @@ public class Algo_Trois_Deux_SSS {
                         System.out.print(line.charAt(j));
                     }else {
                         //*********** regler l'ajout des contraintes
-                        for (int k = 0 ; k < 3 ; k ++){
-                            for (int u = 0 ; u <3 ; u++) {
-                                this.binaires[i][j][k][u] = true ;
-                                this.nb_clauses++ ;
-                            }
-                        }
+                        this.binaires[j][i][0][0] = true ;
+                        this.nb_clauses++ ;
+                        this.binaires[j][i][1][1] = true ;
+                        this.nb_clauses++ ;
+                        this.binaires[j][i][2][2] = true ;
+                        this.nb_clauses++ ;
+
                         System.out.print(line.charAt(j));
                     }
                 }else
@@ -86,6 +88,7 @@ public class Algo_Trois_Deux_SSS {
             System.out.println("");
         }
         System.out.println("-----------------------");
+
         supprimerConraintes();
     }
 
@@ -95,7 +98,7 @@ public class Algo_Trois_Deux_SSS {
      * @param n
      */
     public void initTablesContarinte(int n){
-        this.tabTaille = n;
+
         this.unaires = new boolean[n][3];
         this.binaires = new boolean[n][n][3][3];
 
@@ -120,16 +123,15 @@ public class Algo_Trois_Deux_SSS {
      *
      * @param varX
      */
-    public void cas_2(int varX){
+    public void cas_2(int varX , int c1 , int c2, int co){
 
         //supprission de var X de toutes les contrainbtes unaires
-        this.unaires[varX][0] = false ;
-        this.unaires[varX][1] = false ;
-        this.unaires[varX][2] = false ;
-        this.nb_clauses = this.nb_clauses - 3 ;
+        this.unaires[varX][c1] = false ;
+        this.unaires[varX][c2] = false ;
+        this.nb_clauses = this.nb_clauses - 2;
 
         //supprission de var X de toutes les contrainbtes binares
-            for (int j = 0 ; j < this.tabTaille ; j++){
+            for (int j = 0 ; j < this.binaires.length ; j++){
                 if(j != varX) {
                     for (int k = 0; k < 3; k++) {
                         for (int u = 0; u < 3; u++) {
@@ -137,13 +139,22 @@ public class Algo_Trois_Deux_SSS {
                             if (this.binaires[varX][j][k][u]) {
                                 this.binaires[varX][j][k][u] = false;
                                 this.nb_clauses -- ;
+                                if (k == co){
+                                    this.unaires[j][u] = true ;
+                                    this.nb_clauses++;
+                                }
                             }
 
                             // supprimons l'autre cote des couleurs les arretes entrantes
                             if (this.binaires[j][varX][k][u]) {
                                 this.binaires[j][varX][k][u] = false;
                                 this.nb_clauses -- ;
+                                if (u == co){
+                                    this.unaires[j][k] = true ;
+                                    this.nb_clauses++;
+                                }
                             }
+
                         }
                     }
                 }
@@ -161,7 +172,7 @@ public class Algo_Trois_Deux_SSS {
         this.unaires[varX][c] = false ;
         this.nb_clauses--;
 
-        for (int j = 0 ; j < this.tabTaille ; j ++){
+        for (int j = 0 ; j < this.binaires.length ; j ++){
             if ( j != varX){
                 for (int u = 0 ; u < 3 ; u++){
                     if (this.binaires[varX][j][c][u]){
@@ -183,7 +194,7 @@ public class Algo_Trois_Deux_SSS {
         listesDesContraintesAsupprimer =
                 new ArrayList<>();
 
-        for (int j = 0 ; j < this.tabTaille; j ++){
+        for (int j = 0 ; j < this.binaires.length; j ++){
             if ( j != varX){
                 for (int u = 0 ; u < 3 ; u++){
                     if (this.binaires[varX][j][this.deuxCouelurs.get(0)][u]){
@@ -194,30 +205,33 @@ public class Algo_Trois_Deux_SSS {
                         e[3] = u;
                         listesDesContraintesAsupprimer.add(e);
                         ///////////////////////////////2eme couleur
-                        for (int i = 0 ; i< this.tabTaille ; i ++){
+                        for (int i = 0 ; i< this.binaires.length ; i ++){
                             if ( i != varX){
                                 for (int k = 0 ; k < 3 ; k++){
-                                    if (this.binaires[varX][i][this.deuxCouelurs.get(1)][k]){
-                                        int[] e2 = new int[4];
-                                        e2[0] = varX;
-                                        e2[1] = i ;
-                                        e2[2] = this.deuxCouelurs.get(1);
-                                        e2[3] = k;
-                                        listesDesContraintesAsupprimer.add(e2);
-                                        //***** ajoute de la contrainte
-                                        this.binaires[j][i][u][k] = true;
-                                        this.nb_clauses++;
-                                    }
-                                    else if (this.binaires[i][varX][k][this.deuxCouelurs.get(1)]){
-                                        int[] e2 = new int[4];
-                                        e2[0] = i;
-                                        e2[1] = varX;
-                                        e2[2] = this.deuxCouelurs.get(1);
-                                        e2[3] = k;
-                                        listesDesContraintesAsupprimer.add(e2);
-                                        //*****
-                                        this.binaires[j][i][u][k] = true;
-                                        this.nb_clauses++;
+                                    if (j != i ){
+                                        if (this.binaires[varX][i][this.deuxCouelurs.get(1)][k]){
+                                            int[] e2 = new int[4];
+                                            e2[0] = varX;
+                                            e2[1] = i ;
+                                            e2[2] = this.deuxCouelurs.get(1);
+                                            e2[3] = k;
+                                            listesDesContraintesAsupprimer.add(e2);
+                                            //***** ajoute de la contrainte
+                                            this.binaires[j][i][u][k] = true;
+                                            this.nb_clauses++;
+                                        }
+                                        else if (this.binaires[i][varX][k][this.deuxCouelurs.get(1)]){
+                                            int[] e2 = new int[4];
+                                            e2[0] = i;
+                                            e2[1] = varX;
+                                            e2[2] = k;
+                                            e2[3] = this.deuxCouelurs.get(1);
+
+                                            listesDesContraintesAsupprimer.add(e2);
+                                            //*****
+                                            this.binaires[j][i][u][k] = true;
+                                            this.nb_clauses++;
+                                        }
                                     }
                                 }
                             }
@@ -228,34 +242,36 @@ public class Algo_Trois_Deux_SSS {
                         int[] e = new int[4];
                         e[0] = j;
                         e[1] = varX;
-                        e[2] = this.deuxCouelurs.get(0);
-                        e[3] = u;
+                        e[2] = u;
+                        e[3] = this.deuxCouelurs.get(0);
                         listesDesContraintesAsupprimer.add(e);
                         ///////////////////////////////2eme couleur
-                        for (int i = 0 ; i< this.tabTaille ; i ++){
+                        for (int i = 0 ; i< this.binaires.length ; i ++){
                             if ( i != varX){
                                 for (int k = 0 ; k < 3 ; k++){
-                                    if (this.binaires[varX][i][this.deuxCouelurs.get(1)][k]){
-                                        int[] e2 = new int[4];
-                                        e2[0] = varX;
-                                        e2[1] = i ;
-                                        e2[2] = this.deuxCouelurs.get(1);
-                                        e2[3] = k;
-                                        listesDesContraintesAsupprimer.add(e2);
-                                        //***** ajoute de la contrainte
-                                        this.binaires[j][i][u][k] = true;
-                                        this.nb_clauses++;
-                                    }
-                                    else if (this.binaires[i][varX][k][this.deuxCouelurs.get(1)]){
-                                        int[] e2 = new int[4];
-                                        e2[0] = i;
-                                        e2[1] = varX;
-                                        e2[2] = this.deuxCouelurs.get(1);
-                                        e2[3] = k;
-                                        listesDesContraintesAsupprimer.add(e2);
-                                        //*****
-                                        this.binaires[j][i][u][k] = true;
-                                        this.nb_clauses++;
+                                    if (i != j){
+                                        if (this.binaires[varX][i][this.deuxCouelurs.get(1)][k]){
+                                            int[] e2 = new int[4];
+                                            e2[0] = varX;
+                                            e2[1] = i ;
+                                            e2[2] = this.deuxCouelurs.get(1);
+                                            e2[3] = k;
+                                            listesDesContraintesAsupprimer.add(e2);
+                                            //***** ajoute de la contrainte
+                                            this.binaires[j][i][u][k] = true;
+                                            this.nb_clauses++;
+                                        }
+                                        else if (this.binaires[i][varX][k][this.deuxCouelurs.get(1)]){
+                                            int[] e2 = new int[4];
+                                            e2[0] = i;
+                                            e2[1] = varX;
+                                            e2[2] = k;
+                                            e2[3] = this.deuxCouelurs.get(1);
+                                            listesDesContraintesAsupprimer.add(e2);
+                                            //*****
+                                            this.binaires[j][i][u][k] = true;
+                                            this.nb_clauses++;
+                                        }
                                     }
                                 }
                             }
@@ -266,7 +282,17 @@ public class Algo_Trois_Deux_SSS {
             }
         }
 
-        supprimerCeuxAsupprimer();
+        int[] er ;
+        for (int i = 0 ; i < this.listesDesContraintesAsupprimer.size() ; i++){
+            er = this.listesDesContraintesAsupprimer.get(i);
+            if (this.binaires[er[0]][er[1]][er[2]][er[3]] == true){
+                this.binaires[er[0]][er[1]][er[2]][er[3]] = false;
+                this.nb_clauses--;
+            }
+
+        }
+
+        //supprimerCeuxAsupprimer();
     }
 
     /**
@@ -282,38 +308,52 @@ public class Algo_Trois_Deux_SSS {
             case 0 :
                 this.unaires[varX][c1] = true;
                 //
-                this.unaires[varY][c1] = true;
-                this.nb_clauses+= 2;
+                if (c2 == COULEUR_ROUGE)
+                    this.unaires[varY][COULEUR_VERT] = true;
+                else if(c2 == COULEUR_VERT)
+                    this.unaires[varY][COULEUR_ROUGE] = true;
+                else
+                    this.unaires[varY][COULEUR_ROUGE] = true;
+                //
+                this.nb_clauses= this.nb_clauses + 2;
                 break;
             case 1 :
                 this.unaires[varX][c1] = true;
                 //
-                if (c1 == COULEUR_ROUGE && c2 == COULEUR_VERT)
+                if (c2 == COULEUR_ROUGE)
                     this.unaires[varY][COULEUR_BLANC] = true;
-                else if(c1 == COULEUR_ROUGE && c2 == COULEUR_BLANC)
-                    this.unaires[varY][COULEUR_VERT] = true;
+                else if(c2 == COULEUR_VERT)
+                    this.unaires[varY][COULEUR_BLANC] = true;
                 else
-                    this.unaires[varY][COULEUR_ROUGE] = true;
-                this.nb_clauses+= 2;
-                    break;
-            case 2 :
-                this.unaires[varX][c2] = true;
+                    this.unaires[varY][COULEUR_VERT] = true;
                 //
-                this.unaires[varY][c2] = true;
-                this.nb_clauses+= 2;
+                this.nb_clauses= this.nb_clauses + 2;
                 break;
-            case 3 :
-                if (c1 == COULEUR_ROUGE && c2 == COULEUR_VERT)
-                    this.unaires[varX][COULEUR_BLANC] = true;
-                else if(c1 == COULEUR_ROUGE && c2 == COULEUR_BLANC)
+            case 2 :
+                if (c1 == COULEUR_ROUGE)
                     this.unaires[varX][COULEUR_VERT] = true;
+                else if(c1 == COULEUR_VERT)
+                    this.unaires[varX][COULEUR_ROUGE] = true;
                 else
                     this.unaires[varX][COULEUR_ROUGE] = true;
                 //
+                //
                 this.unaires[varY][c2] = true;
-                this.nb_clauses+= 2;
+                this.nb_clauses= this.nb_clauses + 2;
+                break;
+            case 3 :
+                if (c1 == COULEUR_ROUGE)
+                    this.unaires[varX][COULEUR_BLANC] = true;
+                else if(c1 == COULEUR_VERT)
+                    this.unaires[varX][COULEUR_BLANC] = true;
+                else
+                    this.unaires[varX][COULEUR_VERT] = true;
+                //
+                this.unaires[varY][c2] = true;
+                this.nb_clauses= this.nb_clauses + 2;
                 break;
         }
+
 
     }
 
@@ -356,11 +396,16 @@ public class Algo_Trois_Deux_SSS {
      * les contraintes de cas 3
      */
     public void supprimerCeuxAsupprimer(){
+     //   System.out.println(this.nb_clauses);
         for (int i = 0 ; i < this.listesDesContraintesAsupprimer.size() ; i++){
-            int[] e = this.listesDesContraintesAsupprimer.get(0);
+            int[] e = this.listesDesContraintesAsupprimer.get(i);
+            System.out.println(e[0]+" / "+e[1]+" / "+e[2]+" / "+e[3]);
+            System.out.println("----- " + this.binaires[e[0]][e[1]][e[2]][e[3]]);
             this.binaires[e[0]][e[1]][e[2]][e[3]] = false;
             this.nb_clauses--;
         }
+        //System.exit(0);
+     //   System.out.println(this.nb_clauses);
     }
 
     /**
@@ -375,61 +420,62 @@ public class Algo_Trois_Deux_SSS {
         while (b) {
 
             //cas 1 : il y a une variable x qui apparaît dans 3 contraintes unaires
-            for(int i = 0 ; i < this.tabTaille ; i++){
+            for(int i = 0 ; i < this.unaires.length; i++){
                 if((this.unaires[i][0] == true)&&(this.unaires[i][1] == true)&&(this.unaires[i][2] == true)) {
                     b = false;
+                    this.bb = 1 ;
                     continue OUTER_LOOP ;
                 }
             }
 
             //cas 2 :
-            for(int i = 0 ; i < this.tabTaille; i++){
+            for(int i = 0 ; i < this.unaires.length; i++){
                 if((this.unaires[i][0] == true)&&(this.unaires[i][1] == true)) {
-                    cas_2(i);
-                    b = verfierContraiteRestantes();
+                    cas_2(i,0 , 1 , 2);
+                    //b = verfierContraiteRestantes();
                     continue OUTER_LOOP;
                 }
                 else if((this.unaires[i][0] == true)&&(this.unaires[i][2] == true)){
-                    cas_2(i);
-                    b = verfierContraiteRestantes();
+                    cas_2(i, 0 , 2 , 1 );
+                   // b = verfierContraiteRestantes();
                     continue OUTER_LOOP;
                 }
                 else if((this.unaires[i][1] == true)&&(this.unaires[i][2] == true)){
-                    cas_2(i);
-                    b = verfierContraiteRestantes();
+                    cas_2(i, 1 , 2 , 0);
+                   // b = verfierContraiteRestantes();
                     continue OUTER_LOOP;
                 }
 
             }
 
             //cas 3 :
-            for (int i = 0 ; i < this.tabTaille; i++){
+            for (int i = 0 ; i < this.unaires.length; i++){
                 if(this.unaires[i][0] == true) {
                     cas_3(i, 0);
-                    b = verfierContraiteRestantes();
+                   // b = verfierContraiteRestantes();
                     continue OUTER_LOOP;
                 }
                 else if(this.unaires[i][1] == true){
                     cas_3(i , 1);
-                    b = verfierContraiteRestantes();
+                  //  b = verfierContraiteRestantes();
                     continue OUTER_LOOP;
                 }
                 else if(this.unaires[i][2] == true){
                     cas_3(i , 2);
-                    b = verfierContraiteRestantes();
+                   // b = verfierContraiteRestantes();
                     continue OUTER_LOOP;
                 }
             }
 
 
             //cas 4 :
-            for (int i = 0 ; i < this.tabTaille ; i++){
+            for (int i = 0 ; i < this.binaires.length ; i++){
                 for (int j = 0 ; j < this.binaires.length ; j++){
                     for (int k = 0 ; k < 3 ; k++){
                         for (int  u = 0 ; u < 3 ; u++){
                             if (this.binaires[i][j][k][u]){
                                 cas_4(i , j , k , u);
-                                b = verfierContraiteRestantes();
+                            //    b = verfierContraiteRestantes();
                                 continue OUTER_LOOP;
                             }
 
@@ -438,12 +484,14 @@ public class Algo_Trois_Deux_SSS {
                 }
             }
 
+            b = false;
+
         }
 
-        if (b == false && this.nb_clauses == 0){
-            System.out.println("coloriable");
-        }else if (b == false)
+        if (b == false && this.bb == 1){
             System.out.println("non coloriable");
+        }else if (b == false)
+            System.out.println("coloriable");
     }
 
     /**
