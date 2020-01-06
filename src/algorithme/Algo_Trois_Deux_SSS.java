@@ -102,6 +102,7 @@ public class Algo_Trois_Deux_SSS {
         this.unaires = new boolean[n][3];
         this.binaires = new boolean[n][n][3][3];
 
+
         for (int i = 0 ; i < n ; i++){
             for (int j = 0 ; j < n ; j++){
                 for (int k = 0 ; k < 3 ; k ++){
@@ -172,8 +173,8 @@ public class Algo_Trois_Deux_SSS {
         this.unaires[varX][c] = false ;
         this.nb_clauses--;
 
+
         for (int j = 0 ; j < this.binaires.length ; j ++){
-            if ( j != varX){
                 for (int u = 0 ; u < 3 ; u++){
                     if (this.binaires[varX][j][c][u]){
                         this.binaires[varX][j][c][u] = false;
@@ -185,7 +186,6 @@ public class Algo_Trois_Deux_SSS {
                         this.nb_clauses-- ;
                     }
                 }
-            }
         }
 
         //recueprer les 2 autres coueleurs
@@ -195,7 +195,6 @@ public class Algo_Trois_Deux_SSS {
                 new ArrayList<>();
 
         for (int j = 0 ; j < this.binaires.length; j ++){
-            if ( j != varX){
                 for (int u = 0 ; u < 3 ; u++){
                     if (this.binaires[varX][j][this.deuxCouelurs.get(0)][u]){
                         int[] e = new int[4];
@@ -206,9 +205,7 @@ public class Algo_Trois_Deux_SSS {
                         listesDesContraintesAsupprimer.add(e);
                         ///////////////////////////////2eme couleur
                         for (int i = 0 ; i< this.binaires.length ; i ++){
-                            if ( i != varX){
                                 for (int k = 0 ; k < 3 ; k++){
-                                    if (j != i ){
                                         if (this.binaires[varX][i][this.deuxCouelurs.get(1)][k]){
                                             int[] e2 = new int[4];
                                             e2[0] = varX;
@@ -216,29 +213,42 @@ public class Algo_Trois_Deux_SSS {
                                             e2[2] = this.deuxCouelurs.get(1);
                                             e2[3] = k;
                                             listesDesContraintesAsupprimer.add(e2);
-                                            //***** ajoute de la contrainte
-                                            this.binaires[j][i][u][k] = true;
-                                            this.nb_clauses++;
-                                        }
-                                        else if (this.binaires[i][varX][k][this.deuxCouelurs.get(1)]){
+                                            if (j == i ){
+                                                if (u == k)
+                                                    this.unaires[j][u] = true;//ajouter une contrainte de type[(z,c)]
+                                                    //avec y == z et b == c
+                                            }
+                                            else {
+                                                //***** ajoute de la contrainte
+                                                this.binaires[j][i][u][k] = true;
+                                                this.nb_clauses++;
+                                            }
+                                        }////////////////////
+                                        if (this.binaires[i][varX][k][this.deuxCouelurs.get(1)]){
                                             int[] e2 = new int[4];
                                             e2[0] = i;
                                             e2[1] = varX;
                                             e2[2] = k;
                                             e2[3] = this.deuxCouelurs.get(1);
-
                                             listesDesContraintesAsupprimer.add(e2);
-                                            //*****
-                                            this.binaires[j][i][u][k] = true;
-                                            this.nb_clauses++;
+                                            //***** ajoute de la contrainte
+                                            if (j == i ){
+                                                if (u == k)
+                                                    this.unaires[j][u] = true;//ajouter une contrainte de type[(z,c)]
+                                                //avec y == z et b == c
+                                            }
+                                            else {
+                                                //***** ajoute de la contrainte
+                                                this.binaires[j][i][u][k] = true;
+                                                this.nb_clauses++;
+                                            }
                                         }
-                                    }
                                 }
-                            }
                         }
                         //////////////////////////////////
                     }
-                    else if (this.binaires[j][varX][u][this.deuxCouelurs.get(0)]){
+
+                    if (this.binaires[j][varX][u][this.deuxCouelurs.get(0)]){
                         int[] e = new int[4];
                         e[0] = j;
                         e[1] = varX;
@@ -247,9 +257,7 @@ public class Algo_Trois_Deux_SSS {
                         listesDesContraintesAsupprimer.add(e);
                         ///////////////////////////////2eme couleur
                         for (int i = 0 ; i< this.binaires.length ; i ++){
-                            if ( i != varX){
                                 for (int k = 0 ; k < 3 ; k++){
-                                    if (i != j){
                                         if (this.binaires[varX][i][this.deuxCouelurs.get(1)][k]){
                                             int[] e2 = new int[4];
                                             e2[0] = varX;
@@ -258,10 +266,18 @@ public class Algo_Trois_Deux_SSS {
                                             e2[3] = k;
                                             listesDesContraintesAsupprimer.add(e2);
                                             //***** ajoute de la contrainte
-                                            this.binaires[j][i][u][k] = true;
-                                            this.nb_clauses++;
-                                        }
-                                        else if (this.binaires[i][varX][k][this.deuxCouelurs.get(1)]){
+                                            if (j == i ){
+                                                if (u == k)
+                                                    this.unaires[j][u] = true;//ajouter une contrainte de type[(z,c)]
+                                                //avec y == z et b == c
+                                            }
+                                            else {
+                                                //***** ajoute de la contrainte
+                                                this.binaires[j][i][u][k] = true;
+                                                this.nb_clauses++;
+                                            }
+                                        }////////////////////////////
+                                        if (this.binaires[i][varX][k][this.deuxCouelurs.get(1)]){
                                             int[] e2 = new int[4];
                                             e2[0] = i;
                                             e2[1] = varX;
@@ -269,17 +285,23 @@ public class Algo_Trois_Deux_SSS {
                                             e2[3] = this.deuxCouelurs.get(1);
                                             listesDesContraintesAsupprimer.add(e2);
                                             //*****
-                                            this.binaires[j][i][u][k] = true;
-                                            this.nb_clauses++;
+                                            if (j == i ){
+                                                if (u == k)
+                                                    this.unaires[j][u] = true;//ajouter une contrainte de type[(z,c)]
+                                                //avec y == z et b == c
+                                            }
+                                            else {
+                                                //***** ajoute de la contrainte
+                                                this.binaires[j][i][u][k] = true;
+                                                this.nb_clauses++;
+                                            }
                                         }
-                                    }
                                 }
-                            }
                         }
                         //////////////////////////////////
                     }
                 }
-            }
+
         }
 
         int[] er ;
@@ -445,7 +467,6 @@ public class Algo_Trois_Deux_SSS {
                    // b = verfierContraiteRestantes();
                     continue OUTER_LOOP;
                 }
-
             }
 
             //cas 3 :
