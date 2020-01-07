@@ -25,6 +25,7 @@ public class Algo_Trois_Deux_SSS {
     private ArrayList<int[]> listesDesContraintesAsupprimer ;
 
     public Algo_Trois_Deux_SSS() throws IOException {
+
         String defaultDirectory = "res";
         JFileChooser e = new JFileChooser(defaultDirectory);
 
