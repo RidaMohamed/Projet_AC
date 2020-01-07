@@ -21,10 +21,8 @@ public class Algo_Trois_Deux_SSS {
     private int nb_clauses_binaires;
     private int bb = 0;
 
-    private int nb_var;
     private ArrayList<Integer> deuxCouelurs;
     private ArrayList<int[]> listesDesContraintesAsupprimer ;
-    private int tabTaille = 0;
 
     public Algo_Trois_Deux_SSS() throws IOException {
         String defaultDirectory = "res";
@@ -87,9 +85,10 @@ public class Algo_Trois_Deux_SSS {
 
             System.out.println("");
         }
-        System.out.println("-----------------------");
+        System.out.println("--------------------------------------");
 
         supprimerConraintes();
+
     }
 
     /**
@@ -380,19 +379,6 @@ public class Algo_Trois_Deux_SSS {
     }
 
     /**
-     * cette fonction verfier s'il reste encore
-     * des ciobtraintes a traiter
-     * @return false ou true
-     */
-    public boolean verfierContraiteRestantes(){
-
-        if(this.nb_clauses == 0)
-            return false;
-
-        return true;// signifie que il restes des contraintes plus de vars
-    }
-
-    /**
      * cette fonction ajoute les deux couleurs
      * pour le cas 3
      * @param c
@@ -411,23 +397,6 @@ public class Algo_Trois_Deux_SSS {
             deuxCouelurs.add(COULEUR_ROUGE);
             deuxCouelurs.add(COULEUR_VERT);
         }
-    }
-
-    /**
-     * cette fonciton supprime
-     * les contraintes de cas 3
-     */
-    public void supprimerCeuxAsupprimer(){
-     //   System.out.println(this.nb_clauses);
-        for (int i = 0 ; i < this.listesDesContraintesAsupprimer.size() ; i++){
-            int[] e = this.listesDesContraintesAsupprimer.get(i);
-            System.out.println(e[0]+" / "+e[1]+" / "+e[2]+" / "+e[3]);
-            System.out.println("----- " + this.binaires[e[0]][e[1]][e[2]][e[3]]);
-            this.binaires[e[0]][e[1]][e[2]][e[3]] = false;
-            this.nb_clauses--;
-        }
-        //System.exit(0);
-     //   System.out.println(this.nb_clauses);
     }
 
     /**
@@ -509,16 +478,74 @@ public class Algo_Trois_Deux_SSS {
 
         }
 
+        afficherContraintes();
+        System.out.println("");
+        System.out.println("");
         if (b == false && this.bb == 1){
-            System.out.println("non coloriable");
+            System.out.println("----> le graphe est non coloriable");
         }else if (b == false)
-            System.out.println("coloriable");
+            System.out.println("----> le graphe est coloriable");
     }
 
     /**
      * Affichage des contraintes au crous de developpement
       */
     public void afficherContraintes(){
-        System.out.println("errre");
+
+        int sautDeligne = 0;
+        System.out.println("---------------------------------------------");
+        System.out.println("---------------------------------------------");
+
+        System.out.println("l'ensmeble des contraintes C  est :");
+        for (int j = 0 ; j < this.unaires.length ; j++){
+            if (this.unaires[j][0])
+                System.out.print("[ s" + j + ", R" +  "] ; ");
+            if (this.unaires[j][1])
+                System.out.print("[ s" + j + ", V" + "] ; ");
+            if (this.unaires[j][2])
+                System.out.print("[ s" + j + ", B" + "] ; ");
+        }
+
+        for (int i = 0 ; i < this.binaires.length ; i++){
+            for (int j = 0 ; j < this.binaires.length ; j++){
+                for (int k = 0 ; k < 3 ; k++){
+                    for ( int u = 0 ; u < 3 ; u++){
+                        if (this.binaires[i][j][k][u]){
+                            if (k == 0  && u == 0){
+                                System.out.println("[ ( s" + i + ", R)" + " , ( s" + j + ", R)" + "] ; ");
+                            }
+                            else if(k == 0 && u == 1){
+                                System.out.println("[ ( s" + i + ", R)" + " , ( s" + j + ", V)" + "] ; ");
+                            }
+                            else if(k == 0 && u == 2){
+                                System.out.println("[ ( s" + i + ", R)" + " , ( s" + j + ", B)" + "] ; ");
+                            }
+                            else if(k == 1 && u == 0){
+                                System.out.println("[ ( s" + i + ", V)" + " , ( s" + j + ", R)" + "] ; ");
+                            }
+                            else if(k == 1 && u == 1){
+                                System.out.println("[ ( s" + i + ", V)" + " , ( s" + j + ", V)" + "] ; ");
+                            }
+                            else if(k == 1 && u == 2){
+                                System.out.println("[ ( s" + i + ", V)" + " , ( s" + j + ", B)" + "] ; ");
+                            }
+                            else if(k == 2 && u == 0){
+                                System.out.println("[ ( s" + i + ", B)" + " , ( s" + j + ", R)" + "] ; ");
+                            }
+                            else if(k == 2 && u == 1){
+                                System.out.println("[ ( s" + i + ", B)" + " , ( s" + j + ", V)" + "] ; ");
+                            }
+                            else if(k == 2 && u == 2){
+                                System.out.println("[ ( s" + j + ", B)" + " , ( s" + i + ", B)" + "] ; ");
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("---------------------------------------------");
+        System.out.println("---------------------------------------------");
     }
 }
