@@ -3,5 +3,5 @@ Comment lancer l'algo :
 ---> avec le jar
 ---> choisir le fichier de test (le fichier doit forcement commencer par :
      la taille : taille de graphe)
----> enuite l'algo dans la reponse soit coloriabile oun non coloriable plus
-     ñ'affichage des contraintes
+---> enuite l'algo dans la reponse soit coloriable ou non coloriable plus
+     l'affichage des contraintes
