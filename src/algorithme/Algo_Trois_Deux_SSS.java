@@ -17,22 +17,30 @@ public class Algo_Trois_Deux_SSS {
     private boolean [][] unaires ;
 
     private int nb_clauses = 0;
-    private int nb_clauses_unaires;
-    private int nb_clauses_binaires;
+    private Double nb_color = 0.0;
+    private int nb_non_color = 0;
     private int bb = 0;
+
+    //private String
 
     private ArrayList<Integer> deuxCouelurs;
     private ArrayList<int[]> listesDesContraintesAsupprimer ;
 
     public Algo_Trois_Deux_SSS() throws IOException {
 
-        String defaultDirectory = "res";
+        String defaultDirectory = "test";
         JFileChooser e = new JFileChooser(defaultDirectory);
 
         int returnVal = e.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             String file = e.getSelectedFile().getPath();
-            ajouterContraintes(file);
+            for (int o = 0 ; o < 10 ; o++){
+                bb = 0;
+                ajouterContraintes(file);
+            }
+
+            System.out.println("Ce graphe est : " + (Double)((this.nb_color*100)/10));
+            System.out.println("Coloriable");
 
         }
     }
@@ -88,7 +96,10 @@ public class Algo_Trois_Deux_SSS {
         }
         System.out.println("--------------------------------------");
 
-        supprimerConraintes();
+       // for (int b = 0 ; b < 10 ; b++)
+            supprimerConraintes();
+
+      //  System.out.println("Ce graphe est : " + + "coloriable");
 
     }
 
@@ -479,13 +490,12 @@ public class Algo_Trois_Deux_SSS {
 
         }
 
-        afficherContraintes();
-        System.out.println("");
-        System.out.println("");
         if (b == false && this.bb == 1){
-            System.out.println("----> le graphe est non coloriable");
+          //  System.out.println("----> le graphe est non coloriable");
+            nb_non_color++;
         }else if (b == false)
-            System.out.println("----> le graphe est coloriable");
+            nb_color++;
+           // System.out.println("----> le graphe est coloriable");
     }
 
     /**
