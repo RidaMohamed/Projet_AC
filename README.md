@@ -1,4 +1,4 @@
-###Comment lancer l'algo :
+### Comment lancer l'algo :
 
 ---> avec le jar
 ---> choisir un graphe a tester parmi les graphes de tests qui sont sur le dossier test
